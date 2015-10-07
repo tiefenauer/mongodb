@@ -5,9 +5,8 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bson.Document;
 
-import com.mongodb.client.FindIterable;
+import info.tiefenauer.mongodb.operations.IMongoOperation;
 
 public class Log {
 	
@@ -18,18 +17,14 @@ public class Log {
 		logger.debug(obj);
 	}
 
-	public static <T> void logSize(Class<T> clazz, FindIterable<Document> iterable) {
-		Logger logger =  getLogger(clazz);
-		int size = 0;
-		for (Document document : iterable) {
-			size++;
-		}
-		logger.debug("Found " + size + " elements");
-	}
-
 	private static <T> Logger getLogger(Class<T> clazz) {
 		if (!loggers.containsKey(clazz.getName()))
 			loggers.put(clazz.getName(), LogManager.getLogger(clazz));
 		return loggers.get(clazz.getName());
+	}
+
+	public static void logSize(IMongoOperation operation, String operationNamePast, long size) {
+		Logger logger =  getLogger(operation.getClass());
+		logger.debug(operationNamePast + " " + size + " elements");		
 	}
 }
