@@ -36,7 +36,7 @@ public class MongoRemove extends MongoOperation {
 	 * including the indexes, and then recreate the collection and rebuild the indexes. Use the drop method to drop a collection, including any indexes.
 	 */
 	private void drop() {
-		
+		db.getCollection(MongoDB.COLLECTION_NAME).drop();
 	}
 
 }
