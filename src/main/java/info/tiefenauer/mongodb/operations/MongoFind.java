@@ -32,7 +32,7 @@ public class MongoFind extends MongoOperation {
 	public void execute() {
 		// query all
 		FindIterable<Document> iterable = all();
-		logSize(iterable);
+		logResultCount(iterable);
 		
 		/**
 		 * query matching
@@ -91,7 +91,7 @@ public class MongoFind extends MongoOperation {
 	
 	private FindIterable<Document> find(Bson bson) {
 		FindIterable<Document> iterable = db.getCollection(MongoDB.COLLECTION_NAME).find(bson);
-		logSize(iterable);
+		logResultCount(iterable);
 		return iterable;
 	}
 

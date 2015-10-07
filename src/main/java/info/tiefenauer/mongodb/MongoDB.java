@@ -18,6 +18,7 @@ import com.mongodb.util.JSON;
 
 import info.tiefenauer.mongodb.operations.IMongoOperation;
 import info.tiefenauer.mongodb.operations.MongoFind;
+import info.tiefenauer.mongodb.operations.MongoGroup;
 import info.tiefenauer.mongodb.operations.MongoInsert;
 import info.tiefenauer.mongodb.operations.MongoReplace;
 import info.tiefenauer.mongodb.operations.MongoSort;
@@ -45,8 +46,10 @@ public class MongoDB {
 				MongoInsert.class, 
 				MongoFind.class, 
 				MongoSort.class,
-				MongoUpdate.class,
-				MongoReplace.class)
+				MongoUpdate.class,				
+				MongoGroup.class,
+				MongoReplace.class
+				)
 		.forEach(clazz -> {
 			try {
 				IMongoOperation operation = clazz.newInstance();

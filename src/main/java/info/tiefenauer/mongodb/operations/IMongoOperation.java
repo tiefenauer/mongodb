@@ -2,8 +2,6 @@ package info.tiefenauer.mongodb.operations;
 
 import org.bson.Document;
 
-import com.mongodb.client.FindIterable;
-
 import info.tiefenauer.mongodb.Log;
 
 public interface IMongoOperation {
@@ -14,7 +12,7 @@ public interface IMongoOperation {
 		Log.log(getClass(), obj);
 	}
 	
-	default void logSize(FindIterable<Document> iterable){
+	default void logResultCount(Iterable<Document> iterable){
 		int size = 0;
 		for (Document document : iterable) {
 			size++;
