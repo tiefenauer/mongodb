@@ -1,5 +1,6 @@
 package info.tiefenauer.mongodb;
 
+import static com.mongodb.client.model.Filters.eq;
 import static java.util.Arrays.asList;
 
 import java.text.DateFormat;
@@ -10,13 +11,15 @@ import java.util.Locale;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
-import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoDatabase;
 
 public class MongoDB {
+	
+	private static final String COLLECTION_NAME = "restaurants";
 
 	private static Logger logger = LogManager.getLogger(MongoDB.class);
 
@@ -32,11 +35,66 @@ public class MongoDB {
 		mongoClient.close();
 	}
 
+	/**
+	 * Query database 
+	 */
 	private static void find() {
-		FindIterable<Document> iterable = db.getCollection("restaurants").find();
-		iterable.forEach((Block<Document>) logger::debug);
+		// query all
+		query();
+		
+		// query matching
+		query("borough", "Manhattan");
+		
+		// query matching (alternative)
+		query(eq("borough", "Manhattan"));
+		
+		// query matching (embedded document)
+		query("address.zipcode", "10075");
+		
+		// query matching (embedded document)
+		query(eq("address.zipcode", "10075"));
 	}
 
+	private static void query(String key, String value) {
+		query(new Document(key, value));
+		query(eq(key, value));
+	}
+
+	private static void query(Bson bson) {
+		query(COLLECTION_NAME, bson);
+	}
+
+	private static void query(Document document) {
+		query(COLLECTION_NAME, document);
+	}
+
+	private static void query() {
+		query(COLLECTION_NAME);
+	}
+
+	private static void query(String collectionName) {
+		FindIterable<Document> iterable = db.getCollection(collectionName).find();
+		logSize(iterable);
+	}
+	
+	private static void query(String collectionName, Bson bson) {
+		FindIterable<Document> iterable = db.getCollection(collectionName).find(bson);
+		logSize(iterable);
+	}
+	
+
+	private static void logSize(FindIterable<Document> iterable) {
+		int size = 0;
+		for (Document document : iterable) {
+			size++;
+		}
+		logger.debug("Found " + size + " elements");
+	}
+
+	/**
+	 * insert
+	 * @throws ParseException
+	 */
 	private static void insert() throws ParseException {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
 		db.getCollection("restaurants").insertOne(
